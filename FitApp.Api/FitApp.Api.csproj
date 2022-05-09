@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FitApp.ActivityRepository\FitApp.ActivityRepository.csproj" />
+      <ProjectReference Include="..\FitApp.Core\FitApp.Core.csproj" />
+      <ProjectReference Include="..\FitApp.MealNutritionRepository\FitApp.MealNutritionRepository.csproj" />
+      <ProjectReference Include="..\FitApp.MealRepository\FitApp.MealRepository.csproj" />
+      <ProjectReference Include="..\FitApp.MenuRepository\FitApp.MenuRepository.csproj" />
+      <ProjectReference Include="..\FitApp.NutritionRepository\FitApp.NutritionRepository.csproj" />
+      <ProjectReference Include="..\FitApp.SetRepository\FitApp.SetRepository.csproj" />
+      <ProjectReference Include="..\FitApp.TrainingRepository\FitApp.TrainingRepository.csproj" />
+      <ProjectReference Include="..\FitApp.UserPrivateDietDetailRepository\FitApp.UserPrivateDietDetailRepository.csproj" />
+      <ProjectReference Include="..\FitApp.UserPrivateDietRepository\FitApp.UserPrivateDietRepository.csproj" />
+      <ProjectReference Include="..\FitApp.UserPrivateTrainingDetailRepository\FitApp.UserPrivateTrainingDetailRepository.csproj" />
+      <ProjectReference Include="..\FitApp.UserPrivateTrainingRepository\FitApp.UserPrivateTrainingRepository.csproj" />
+      <ProjectReference Include="..\FitApp.UserRepository\FitApp.UserRepository.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+    </ItemGroup>
+
+</Project>
