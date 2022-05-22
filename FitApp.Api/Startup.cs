@@ -91,7 +91,11 @@ namespace FitApp.Api
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
             // specifying the Swagger JSON endpoint.
 
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "FitApp API"); });
+            app.UseSwaggerUI(c =>
+            {
+                c.InjectJavascript("https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.3/swagger-ui-bundle.js", "text/javascript");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FitApp API");
+            });
             app.UseStaticFiles();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
