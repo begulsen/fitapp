@@ -12,9 +12,7 @@ namespace FitApp.NutritionRepository
     {
         public static IServiceCollection AddNutritionRepository(this IServiceCollection services)
         {
-            string elasticUrl;
             NutritionRepositorySettings settings = new NutritionRepositorySettings();
-            elasticUrl = "http://localhost:9200/";
             /*switch (environmentMode)
         {
             case EnvironmentMode.Qa:
@@ -41,9 +39,12 @@ namespace FitApp.NutritionRepository
                 break;
         }*/
 
-            var uriList = elasticUrl.Split(';').Select(x => new Uri(x));
-            var pool = new StaticConnectionPool(uriList);
-            var elasticConnectionSettings = new ConnectionSettings(pool);
+            //string elasticUrl = "http://localhost:9200/";
+            var cloudId =
+                "fitapp:ZXUtd2VzdC0yLmF3cy5jbG91ZC5lcy5pbyQwODY1NTg0NjE0ZTk0MzllYjUxNmEzYzg4ZWVjMTk4NSQ0ZTZiZjE1NDlhNzQ0OTI2YjNkODM3NDBjNDRjZjVhMQ==";
+            var credentials = new BasicAuthenticationCredentials("elastic", "3g6RTJgBBRDKLB3V1C4dy9kg");
+            var pool = new CloudConnectionPool(cloudId, credentials);
+            var elasticConnectionSettings = new ConnectionSettings(pool).ThrowExceptions().EnableDebugMode();
             var elasticClient = new ElasticClient(elasticConnectionSettings);
             var repository = new NutritionRepository(elasticClient, settings);
             services.AddSingleton<INutritionRepository>(repository);

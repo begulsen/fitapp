@@ -40,10 +40,11 @@ namespace FitApp.UserRepository
                     break;
             }*/
             var cloudId =
-                "FitApp:ZXUtd2VzdC0yLmF3cy5jbG91ZC5lcy5pbyQ3OWY3YTVmZDk4MGY0MGE1OWE0OGE5NWM2ZDc4NmZjYyQ3MjkxMGFjMzk2NjQ0OGRmOTI4Y2Q3OTEzMDZjMDM2Yw==";
-            var credentials = new BasicAuthenticationCredentials("elastic", "9hWXRhzg2taoPuSfMJCxCNBP");
+                "fitapp:ZXUtd2VzdC0yLmF3cy5jbG91ZC5lcy5pbyQwODY1NTg0NjE0ZTk0MzllYjUxNmEzYzg4ZWVjMTk4NSQ0ZTZiZjE1NDlhNzQ0OTI2YjNkODM3NDBjNDRjZjVhMQ==";
+            var credentials = new BasicAuthenticationCredentials("elastic", "v");
             var pool = new CloudConnectionPool(cloudId, credentials);
-            var elasticConnectionSettings = new ConnectionSettings(pool).ThrowExceptions().EnableDebugMode();            var elasticClient = new ElasticClient(elasticConnectionSettings);
+            var elasticConnectionSettings = new ConnectionSettings(pool).ThrowExceptions().EnableDebugMode();
+            var elasticClient = new ElasticClient(elasticConnectionSettings);
             var repository = new UserRepository(elasticClient, settings);
             services.AddSingleton<IUserRepository>(repository);
 
