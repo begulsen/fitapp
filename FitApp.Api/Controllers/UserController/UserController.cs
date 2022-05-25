@@ -5,6 +5,7 @@ using FitApp.Api.Controllers.UserController.Model;
 using FitApp.Api.Exceptions;
 using FitApp.Api.Helper;
 using FitApp.Api.Helper.ImageHelper;
+using FitApp.Api.Middleware;
 using FitApp.Api.Service;
 using FitApp.UserRepository.Model;
 using Microsoft.AspNetCore.Http;
@@ -82,11 +83,13 @@ namespace FitApp.Api.Controllers.UserController
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public Task<IActionResult> CreateUser([FromBody] CreateUserModel createUserModel)
+        public ActionResult CreateUser([FromBody] CreateUserModel createUserModel)
         {
-            if (createUserModel == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(createUserModel));
+            if (createUserModel == null) return BadRequest(new ApiError(new ApiException.ValueCannotBeNullOrEmptyException(nameof(createUserModel))));
+            User user = _applicationService.GetUserByMail(createUserModel.CustomerMail).GetAwaiter().GetResult();
+            if (user != null) return BadRequest(new ApiError(new ApiException.UserExist(createUserModel.CustomerMail)));
             _applicationService.CreateUser(createUserModel.ToCreateUser(Guid.NewGuid())).GetAwaiter().GetResult();
-            return Task.FromResult<IActionResult>(StatusCode(StatusCodes.Status201Created));
+            return StatusCode((int) 201, "User created");
         }
 
         /// <summary>
@@ -283,6 +286,31 @@ namespace FitApp.Api.Controllers.UserController
             }
             userImage.Delete();
             return Ok();
+        }
+        
+        /// <summary>
+        /// User Login
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /login
+        /// 
+        /// </remarks>
+        /// <returns>Ok</returns>
+        /// <response code="200">Return ok if successfully log in</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpPost("/login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult Login(string mail, string password)
+        {
+            if (mail == default) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(mail));
+            if (password == default) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(password));
+            User user = _applicationService.GetUserByMail(mail).GetAwaiter().GetResult();
+            if (user == null) return BadRequest(new ApiError(new ApiException.UserExist(mail)));
+            if (user.Password == password) return Ok();
+            return BadRequest("Password didnt match");
         }
     }
 }

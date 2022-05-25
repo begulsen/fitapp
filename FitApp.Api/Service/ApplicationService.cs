@@ -67,6 +67,12 @@ namespace FitApp.Api.Service
             return user;
         }
 
+        public async Task<User> GetUserByMail(string customerMail)
+        {
+            User user = await _userRepository.GetUserByMail(customerMail);
+            return user;
+        }
+
         public async Task<Guid> CreateUser(User user)
         {
             await _userRepository.SaveAsync(user);

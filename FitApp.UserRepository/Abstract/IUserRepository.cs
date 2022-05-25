@@ -8,5 +8,6 @@ namespace FitApp.UserRepository.Abstract
     {
         Task<List<User>> GetAll();
         Task Update(UserPartial updateModel);
+        Task<User> GetUserByMail(string customerMail);
     }
 }

@@ -23,6 +23,12 @@ namespace FitApp.Api.Middleware
             Code = (int) exception.Code;
             Message = exception.Message;
         }
+        
+        public ApiError(ApiException.ConflictException exception)
+        {
+            Code = (int) exception.Code;
+            Message = exception.Message;
+        }
     }
 
     public class ApiExceptionResponse

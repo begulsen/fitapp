@@ -18,6 +18,7 @@ namespace FitApp.Api.Service
     public interface IApplicationService
     {
         Task<User> GetUser(Guid customerId);
+        Task<User> GetUserByMail(String customerMail);
         Task<Guid> CreateUser(User user);
         Task UpdateUser(User updateUser);
         Task<Guid> CreateTraining(TrainingRepository.Model.Training training);

@@ -66,5 +66,20 @@ namespace FitApp.UserRepository
 
             return Task.CompletedTask;
         }
+
+        public Task<User> GetUserByMail(string customerMail)
+        {
+            if (default == customerMail) throw new ArgumentNullException(nameof(customerMail));
+
+            var searchDescriptor = new SearchDescriptor<User>().Index(IndexName).Take(1);
+
+            searchDescriptor.Query(x => x
+                .Term(m => m
+                    .Field(f => f.CustomerMail.Suffix("keyword"))
+                    .Value(customerMail)));
+
+            var result = SessionClient.SearchAsync<User>(searchDescriptor).GetAwaiter().GetResult();
+            HandleResult(result);
+            return Task.FromResult(result.Documents.FirstOrDefault());        }
     }
 }

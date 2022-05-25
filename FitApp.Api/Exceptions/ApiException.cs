@@ -24,6 +24,8 @@ namespace FitApp.Api.Exceptions
             public static ushort UserPrivateTrainingIsNotExistException = 4015;
             public static ushort ImageCountCannotBeMoreThanThreeException = 4016;
             public static ushort UserPrivateDietIsNotExistException = 4017;
+            public static ushort UserExist = 4018;
+            public static ushort UserNotExist = 4019;
         }
         
         public abstract class BadRequestException : Exception
@@ -54,6 +56,18 @@ namespace FitApp.Api.Exceptions
         {
             public UserIdIsNotExistException(string value) : base(value + " is not exist!") { }
             public override ushort Code => BadRequestExceptionCodes.UserIdIsNotExistException;
+        }
+        
+        public class UserExist : ConflictException
+        {
+            public UserExist(string value) : base(value + " is exist!") { }
+            public override ushort Code => BadRequestExceptionCodes.UserExist;
+        }
+        
+        public class UserNotExist : ConflictException
+        {
+            public UserNotExist(string value) : base(value + " is not exist!") { }
+            public override ushort Code => BadRequestExceptionCodes.UserNotExist;
         }
         
         public class SetIdIsNotExistException : BadRequestException
