@@ -43,6 +43,27 @@ namespace FitApp.Api.Helper
             };
         }
         
+        public static User ToCreateUser(this CreateUserWithSocialMediaModel model, Guid customerId)
+        {
+            return new User
+            {
+                Id = customerId,
+                CustomerName = model.CustomerName,
+                CustomerSurname = model.CustomerSurname,
+                CustomerMail = model.CustomerMail,
+                PhoneNumber = model.PhoneNumber,
+                Height = model.Height,
+                Weight = model.Weight,
+                WorkoutRate = model.WorkoutRate,
+                UserStatus = model.UserStatus,
+                WorkoutExperience = model.WorkoutExperience,
+                Goal = model.Goal,
+                BirthDate = model.BirthDate,
+                IsDeleted = false,
+                CreatedAt = DateTime.Now,
+            };
+        }
+        
         public static User ToUpdateUser(this UpdateUserModel model, User user)
         {
             return new User

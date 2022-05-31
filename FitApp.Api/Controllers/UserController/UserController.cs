@@ -79,6 +79,7 @@ namespace FitApp.Api.Controllers.UserController
         /// <returns>Ok</returns>
         /// <response code="201">Returns the newly created user</response>
         /// <response code="400">If the model is null or empty</response>
+        /// <response code="500"></response>
         [HttpPost("/createUser")]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
@@ -89,6 +90,72 @@ namespace FitApp.Api.Controllers.UserController
             User user = _applicationService.GetUserByMail(createUserModel.CustomerMail).GetAwaiter().GetResult();
             if (user != null) return BadRequest(new ApiError(new ApiException.UserExist(createUserModel.CustomerMail)));
             _applicationService.CreateUser(createUserModel.ToCreateUser(Guid.NewGuid())).GetAwaiter().GetResult();
+            return StatusCode((int) 201, "User created");
+        }
+        
+        /// <summary>
+        /// Create a New User
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /createUser
+        ///     {
+        ///         "CustomerMail" : "string"
+        ///         "CustomerName" : "string"
+        ///         "CustomerSurname" : "string"
+        ///         "PhoneNumber" : "string"
+        ///         "BirthDate" : "2019-01-02T20:05:56.105Z"
+        ///         "Height" : "182.3"
+        ///         "Weight" : "85.9"
+        ///         "WorkoutRate" : {
+        ///             None -> 0
+        ///             TwoTimesWeek -> 1
+        ///             FourTimesWeek -> 2
+        ///             MoreThanFourTimesWeek -> 3
+        ///         }
+        ///         "UserStatus" : {
+        ///             Basic -> 0
+        ///             Premium -> 1
+        ///         }
+        ///         "WorkoutExperience" : {
+        ///             Starter -> 0
+        ///             Average -> 1
+        ///             Pro -> 2
+        ///         }
+        ///         "Goal" : {
+        ///             Power -> 0
+        ///             Fit -> 1
+        ///             Muscle -> 2
+        ///             WeightLoss -> 3
+        ///         },
+        ///         "PersonalWorkoutProgram" : {
+        ///             None -> 0
+        ///             Pending -> 1
+        ///             Approve -> 2
+        ///         },
+        ///         "PersonalDietProgram" : {
+        ///             None -> 0
+        ///             Pending -> 1
+        ///             Approve -> 2
+        ///         },
+        ///     }
+        /// </remarks>
+        /// <param name="createUserWithSocialMediaModel"></param>
+        /// <returns>Ok</returns>
+        /// <response code="201">Returns the newly created user</response>
+        /// <response code="400">If the model is null or empty</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpPost("/createUserWithSocialMedia")]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public ActionResult CreateUserWithSocialMediaModel([FromBody] CreateUserWithSocialMediaModel createUserWithSocialMediaModel)
+        {
+            if (createUserWithSocialMediaModel == null) return BadRequest(new ApiError(new ApiException.ValueCannotBeNullOrEmptyException(nameof(createUserWithSocialMediaModel))));
+            User user = _applicationService.GetUserByMail(createUserWithSocialMediaModel.CustomerMail).GetAwaiter().GetResult();
+            if (user != null) return BadRequest(new ApiError(new ApiException.UserExist(createUserWithSocialMediaModel.CustomerMail)));
+            _applicationService.CreateUser(createUserWithSocialMediaModel.ToCreateUser(Guid.NewGuid())).GetAwaiter().GetResult();
             return StatusCode((int) 201, "User created");
         }
 
@@ -150,9 +217,10 @@ namespace FitApp.Api.Controllers.UserController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserModel updateUserModel) 
         { 
-            if (id == default) throw new ApiException.UserIdIsNotValidException(nameof(id));
-            if (updateUserModel == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(updateUserModel));
-            
+            if (id == default) return BadRequest(new ApiError(new ApiException.UserIdIsNotValidException(nameof(id))));
+            if (updateUserModel == null) 
+                return BadRequest(new ApiError(new ApiException.ValueCannotBeNullOrEmptyException(nameof(updateUserModel))));
+
 
             User user = await _applicationService.GetUser(id);
             if (user == null) throw new ApiException.UserIdIsNotExistException(nameof(id));
@@ -243,10 +311,7 @@ namespace FitApp.Api.Controllers.UserController
                     }
                 }
             }
-            if (userImage == null)
-            {
-                throw new ApiException.UserImageIsNotExistException();
-            }
+            if (userImage == null) throw new ApiException.UserImageIsNotExistException();
             FileStream imageStr = System.IO.File.OpenRead(path + "profile-image" + userImage.Extension);
             return File(imageStr, "image/jpeg");        
         }
