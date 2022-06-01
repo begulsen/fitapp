@@ -126,12 +126,14 @@ namespace FitApp.Api.Middleware
         {
             switch (exception)
             {
-                case BusinessException _:
+                case BusinessException:
                     return HttpStatusCode.BadRequest;
-                case ApiException.BadRequestException _:
+                case ApiException.BadRequestException:
                     return HttpStatusCode.BadRequest;
-                case ApiException.ConflictException _:
+                case ApiException.ConflictException:
                     return HttpStatusCode.Conflict;
+                case ApiException.NotFoundException:
+                    return HttpStatusCode.NotFound;
                 default:
                     return HttpStatusCode.InternalServerError;
             }

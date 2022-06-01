@@ -40,6 +40,12 @@ namespace FitApp.Api.Exceptions
             public abstract ushort Code { get; }
         }
         
+        public abstract class NotFoundException : Exception
+        {
+            protected NotFoundException(string message) : base(message) { }
+            public abstract ushort Code { get; }
+        }
+        
         public class ValueCannotBeNullOrEmptyException : BadRequestException
         {
             public ValueCannotBeNullOrEmptyException(string value) : base(value + " cannot be null or empty!") { }
@@ -52,7 +58,7 @@ namespace FitApp.Api.Exceptions
             public override ushort Code => BadRequestExceptionCodes.UserIdIsNotValidException;
         }
         
-        public class UserIdIsNotExistException : BadRequestException
+        public class UserIdIsNotExistException : NotFoundException
         {
             public UserIdIsNotExistException(string value) : base(value + " is not exist!") { }
             public override ushort Code => BadRequestExceptionCodes.UserIdIsNotExistException;
@@ -69,6 +75,13 @@ namespace FitApp.Api.Exceptions
             public UserNotExist(string value) : base(value + " is not exist!") { }
             public override ushort Code => BadRequestExceptionCodes.UserNotExist;
         }
+        
+        public class UserRegisterWithSocialException : ConflictException
+        {
+            public UserRegisterWithSocialException(string value) : base(value+ " register with socialmedia!") { }
+            public override ushort Code => BadRequestExceptionCodes.UserNotExist;
+        }
+        
         
         public class SetIdIsNotExistException : BadRequestException
         {

@@ -367,14 +367,17 @@ namespace FitApp.Api.Controllers.UserController
         /// <response code="500">Internal Server Error</response>
         [HttpPost("/login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Login(string mail, string password)
         {
             if (mail == default) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(mail));
             if (password == default) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(password));
             User user = _applicationService.GetUserByMail(mail).GetAwaiter().GetResult();
-            if (user == null) return BadRequest(new ApiError(new ApiException.UserExist(mail)));
-            if (user.Password == password) return Ok();
+            if (user == null) return NotFound(new ApiError(new ApiException.UserNotExist(mail)));
+            if (user.Password == null) return BadRequest(new ApiError(new ApiException.UserRegisterWithSocialException(mail)));
+            if (user.Password == password) return Ok(); 
             return BadRequest("Password didnt match");
         }
     }
