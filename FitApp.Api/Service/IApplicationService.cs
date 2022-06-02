@@ -20,6 +20,11 @@ namespace FitApp.Api.Service
         Task<User> GetUser(Guid customerId);
         Task<User> GetUserByMail(String customerMail);
         Task<Guid> CreateUser(User user);
+        Task DeleteUser(Guid id);
+        Task DeleteUserPrivateDiet(Guid id);
+        Task DeleteUserPrivateDietDetail(Guid id);
+        Task DeleteUserPrivateTraining(Guid id);
+        Task DeleteUserPrivateTrainingDetail(Guid id);
         Task UpdateUser(User updateUser);
         Task<Guid> CreateTraining(TrainingRepository.Model.Training training);
         Task<TrainingRepository.Model.Training> GetTraining(string trainingName);

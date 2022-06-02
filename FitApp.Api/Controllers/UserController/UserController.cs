@@ -354,6 +354,53 @@ namespace FitApp.Api.Controllers.UserController
         }
         
         /// <summary>
+        /// Delete User Photo
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /{id}/deleteUser
+        /// 
+        /// </remarks>
+        /// <returns>Ok</returns>
+        /// <response co"de="200">Returns the newly created deeplink</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpDelete("/{id:guid}/deleteUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult DeleteUser([FromRoute] Guid id)
+        {
+            if (id == default) return BadRequest(new ApiError(new ApiException.UserIdIsNotValidException(nameof(id))));
+            User user = _applicationService.GetUser(id).GetAwaiter().GetResult();
+            if (user != null) return BadRequest(new ApiError(new ApiException.UserNotExist(id.ToString())));
+            _applicationService.DeleteUser(id).GetAwaiter().GetResult();
+            _applicationService.DeleteUserPrivateDiet(id).GetAwaiter().GetResult();
+            _applicationService.DeleteUserPrivateDietDetail(id).GetAwaiter().GetResult();
+            _applicationService.DeleteUserPrivateTraining(id).GetAwaiter().GetResult();
+            _applicationService.DeleteUserPrivateTrainingDetail(id).GetAwaiter().GetResult();
+            
+            //Delete
+            var path = "images/" + id + "/"; 
+            DirectoryInfo d = new DirectoryInfo(path);
+            FileInfo[] imageFiles = d.GetFiles();
+            FileInfo userImage = null;
+            foreach (var image in imageFiles)
+            {
+                if (image.Extension == ".png" || image.Extension == ".jpg" || image.Extension == ".jpeg")
+                {
+                    userImage = image;
+                }
+            }
+
+            if (userImage == null)
+            {
+                throw new ApiException.UserImageIsNotExistException();
+            }
+            userImage.Delete();
+            return Ok();
+        }
+        
+        /// <summary>
         /// User Login
         /// </summary>
         /// <remarks>

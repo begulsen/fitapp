@@ -79,6 +79,31 @@ namespace FitApp.Api.Service
             return user.Id;
         }
 
+        public async Task DeleteUser(Guid userId)
+        {
+            await _userRepository.DeleteAsync(userId);
+        }
+
+        public async Task DeleteUserPrivateDiet(Guid id)
+        {
+            await _userPrivateDietRepository.DeleteAsync(id);
+        }
+
+        public async Task DeleteUserPrivateDietDetail(Guid id)
+        {
+            await _userPrivateDietDetailRepository.DeleteAsync(id);
+        }
+
+        public async Task DeleteUserPrivateTraining(Guid id)
+        {
+            await _userPrivateTrainingRepository.DeleteAsync(id);
+        }
+
+        public async Task DeleteUserPrivateTrainingDetail(Guid id)
+        {
+            await _userPrivateTrainingDetailRepository.DeleteAsync(id);
+        }
+
         public async Task UpdateUser(User user)
         {
             await _userRepository.SaveAsync(user);

@@ -42,6 +42,14 @@ namespace FitApp.UserRepository
              }
              return merchantList;
         }
+
+        public Task DeleteAsync(Guid userId)
+        {
+            if (userId == default) throw new ArgumentNullException(nameof(userId));
+            var result = SessionClient.DeleteAsync<User>(userId).GetAwaiter().GetResult();
+            HandleResult(result);
+            return Task.CompletedTask;
+        }
         
         public Task Update(UserPartial updateModel)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FitApp.UserRepository.Model;
@@ -9,5 +10,6 @@ namespace FitApp.UserRepository.Abstract
         Task<List<User>> GetAll();
         Task Update(UserPartial updateModel);
         Task<User> GetUserByMail(string customerMail);
+        Task DeleteAsync(Guid userId);
     }
 }
