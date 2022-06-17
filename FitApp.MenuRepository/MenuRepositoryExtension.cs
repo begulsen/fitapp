@@ -43,8 +43,8 @@ namespace FitApp.MenuRepository
             //var uriList = elasticUrl.Split(';').Select(x => new Uri(x));
             //var pool = new StaticConnectionPool(uriList);
             var cloudId =
-                "fitapp:ZXUtd2VzdC0yLmF3cy5jbG91ZC5lcy5pbyQwODY1NTg0NjE0ZTk0MzllYjUxNmEzYzg4ZWVjMTk4NSQ0ZTZiZjE1NDlhNzQ0OTI2YjNkODM3NDBjNDRjZjVhMQ==";
-            var credentials = new BasicAuthenticationCredentials("elastic", "3g6RTJgBBRDKLB3V1C4dy9kg");
+                "My_deployment:ZXUtd2VzdC0yLmF3cy5jbG91ZC5lcy5pbzo0NDMkMTI4MDJlMDhhY2QzNGQ4Yzg4NzZiZmVkNzgyZDUzM2EkNmRjMTRjOTQ4Y2JlNDMzNmE3NDllZDMxNDM0ODFlMTY=";
+            var credentials = new BasicAuthenticationCredentials("elastic", "ZRMZaPLIrI4pVt7k7DAmPi42");
             var pool = new CloudConnectionPool(cloudId, credentials);
             var elasticConnectionSettings = new ConnectionSettings(pool).ThrowExceptions().EnableDebugMode();
             var elasticClient = new ElasticClient(elasticConnectionSettings);

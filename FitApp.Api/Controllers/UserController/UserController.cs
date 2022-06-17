@@ -89,8 +89,9 @@ namespace FitApp.Api.Controllers.UserController
             if (createUserModel == null) return BadRequest(new ApiError(new ApiException.ValueCannotBeNullOrEmptyException(nameof(createUserModel))));
             User user = _applicationService.GetUserByMail(createUserModel.CustomerMail).GetAwaiter().GetResult();
             if (user != null) return BadRequest(new ApiError(new ApiException.UserExist(createUserModel.CustomerMail)));
-            _applicationService.CreateUser(createUserModel.ToCreateUser(Guid.NewGuid())).GetAwaiter().GetResult();
-            return StatusCode((int) 201, "User created");
+            Guid customerId = Guid.NewGuid();
+            _applicationService.CreateUser(createUserModel.ToCreateUser(customerId)).GetAwaiter().GetResult();
+            return StatusCode(201, customerId.ToString());
         }
         
         /// <summary>
@@ -370,7 +371,7 @@ namespace FitApp.Api.Controllers.UserController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteUser([FromRoute] Guid id)
         {
-            if (id == default) return BadRequest(new ApiError(new ApiException.UserIdIsNotValidException(nameof(id))));
+            /*if (id == default) return BadRequest(new ApiError(new ApiException.UserIdIsNotValidException(nameof(id))));
             User user = _applicationService.GetUser(id).GetAwaiter().GetResult();
             if (user != null) return BadRequest(new ApiError(new ApiException.UserNotExist(id.ToString())));
             _applicationService.DeleteUser(id).GetAwaiter().GetResult();
@@ -378,25 +379,11 @@ namespace FitApp.Api.Controllers.UserController
             _applicationService.DeleteUserPrivateDietDetail(id).GetAwaiter().GetResult();
             _applicationService.DeleteUserPrivateTraining(id).GetAwaiter().GetResult();
             _applicationService.DeleteUserPrivateTrainingDetail(id).GetAwaiter().GetResult();
-            
+            */
             //Delete
             var path = "images/" + id + "/"; 
             DirectoryInfo d = new DirectoryInfo(path);
-            FileInfo[] imageFiles = d.GetFiles();
-            FileInfo userImage = null;
-            foreach (var image in imageFiles)
-            {
-                if (image.Extension == ".png" || image.Extension == ".jpg" || image.Extension == ".jpeg")
-                {
-                    userImage = image;
-                }
-            }
-
-            if (userImage == null)
-            {
-                throw new ApiException.UserImageIsNotExistException();
-            }
-            userImage.Delete();
+            d.Delete(true);
             return Ok();
         }
         
