@@ -7,6 +7,7 @@ namespace FitApp.UserPrivateDietRepository.Abstract
     {
         Task SaveAsync(TEntity entity);
         Task<TEntity> GetAsync(string id);
+        Task<bool> DeleteAsync(string id);
         Task BulkSaveAsync(IEnumerable<TEntity> entityList);
         Task<(List<TEntity>, string)> ScrollAsync(string scrollId, string scrollTimeout = "2m");
     }

@@ -371,19 +371,20 @@ namespace FitApp.Api.Controllers.UserController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteUser([FromRoute] Guid id)
         {
-            /*if (id == default) return BadRequest(new ApiError(new ApiException.UserIdIsNotValidException(nameof(id))));
+            if (id == default) return BadRequest(new ApiError(new ApiException.UserIdIsNotValidException(nameof(id))));
             User user = _applicationService.GetUser(id).GetAwaiter().GetResult();
-            if (user != null) return BadRequest(new ApiError(new ApiException.UserNotExist(id.ToString())));
+            if (user == null) return BadRequest(new ApiError(new ApiException.UserNotExist(id.ToString())));
             _applicationService.DeleteUser(id).GetAwaiter().GetResult();
             _applicationService.DeleteUserPrivateDiet(id).GetAwaiter().GetResult();
             _applicationService.DeleteUserPrivateDietDetail(id).GetAwaiter().GetResult();
             _applicationService.DeleteUserPrivateTraining(id).GetAwaiter().GetResult();
             _applicationService.DeleteUserPrivateTrainingDetail(id).GetAwaiter().GetResult();
-            */
-            //Delete
+            
+            
             var path = "images/" + id + "/"; 
             DirectoryInfo d = new DirectoryInfo(path);
-            d.Delete(true);
+            if (d.Exists) 
+                d.Delete(true);
             return Ok();
         }
         

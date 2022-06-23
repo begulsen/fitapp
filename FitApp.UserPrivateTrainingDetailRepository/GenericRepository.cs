@@ -4,8 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Elasticsearch.Net;
+using FitApp.UserPrivateTrainingDetailRepository.Abstract;
 using FitApp.UserPrivateTrainingDetailRepository.Settings;
-using FitApp.UserPrivateTrainingRepository.Abstract;
 using Nest;
 using Newtonsoft.Json;
 
@@ -99,7 +99,10 @@ namespace FitApp.UserPrivateTrainingDetailRepository
             if (!result.IsValid)
             {
                 if (result.Result != Result.NotFound)
-                    throw new Exception(result.OriginalException.Message);
+                {
+                    //throw new Exception(result.OriginalException.Message);
+                    //Logger
+                }
             }
 
             return result.Result == Result.Deleted || result.Result == Result.NotFound;

@@ -6,6 +6,5 @@ namespace FitApp.UserPrivateTrainingRepository.Abstract
 {
     public interface IUserPrivateTrainingRepository : IGenericRepository<UserPrivateTraining>
     {
-        Task DeleteAsync(Guid id);
     }
 }

@@ -10,6 +10,6 @@ namespace FitApp.UserRepository.Abstract
         Task<List<User>> GetAll();
         Task Update(UserPartial updateModel);
         Task<User> GetUserByMail(string customerMail);
-        Task DeleteAsync(Guid userId);
+        //Task DeleteAsync(Guid userId);
     }
 }

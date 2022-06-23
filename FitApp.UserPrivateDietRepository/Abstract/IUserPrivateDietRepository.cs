@@ -6,6 +6,5 @@ namespace FitApp.UserPrivateDietRepository.Abstract
 {
     public interface IUserPrivateDietRepository : IGenericRepository<UserPrivateDiet>
     {
-        Task DeleteAsync(Guid id);
     }
 }

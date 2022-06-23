@@ -111,7 +111,10 @@ namespace FitApp.UserRepository
             if (!result.IsValid)
             {
                 if (result.Result != Result.NotFound)
-                    throw new Exception(result.OriginalException.Message);
+                {
+                    //throw new Exception(result.OriginalException.Message);
+                    //Logger
+                }
             }
 
             return result.Result == Result.Deleted || result.Result == Result.NotFound;

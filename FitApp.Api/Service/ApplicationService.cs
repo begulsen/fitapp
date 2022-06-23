@@ -81,27 +81,27 @@ namespace FitApp.Api.Service
 
         public async Task DeleteUser(Guid userId)
         {
-            await _userRepository.DeleteAsync(userId);
+            await _userRepository.DeleteAsync(userId.ToString());
         }
 
         public async Task DeleteUserPrivateDiet(Guid id)
         {
-            await _userPrivateDietRepository.DeleteAsync(id);
+            await _userPrivateDietRepository.DeleteAsync(id.ToString());
         }
 
         public async Task DeleteUserPrivateDietDetail(Guid id)
         {
-            await _userPrivateDietDetailRepository.DeleteAsync(id);
+            await _userPrivateDietDetailRepository.DeleteAsync(id.ToString());
         }
 
         public async Task DeleteUserPrivateTraining(Guid id)
         {
-            await _userPrivateTrainingRepository.DeleteAsync(id);
+            await _userPrivateTrainingRepository.DeleteAsync(id.ToString());
         }
 
         public async Task DeleteUserPrivateTrainingDetail(Guid id)
         {
-            await _userPrivateTrainingDetailRepository.DeleteAsync(id);
+            await _userPrivateTrainingDetailRepository.DeleteAsync(id.ToString());
         }
 
         public async Task UpdateUser(User user)
@@ -117,8 +117,7 @@ namespace FitApp.Api.Service
 
         public async Task<TrainingRepository.Model.Training> GetTraining(string trainingName)
         {
-            TrainingRepository.Model.Training training = await _trainingRepository.GetTrainingByNameAsync(trainingName);
-            return training;
+            return await _trainingRepository.GetTrainingByNameAsync(trainingName);
         }
 
         public async Task UpdateTraining(Guid trainingId,  List<Guid> setIds)
