@@ -414,5 +414,30 @@ namespace FitApp.Api.Controllers.UserController
             if (user.Password == password) return Ok(); 
             return BadRequest("Password didnt match");
         }
+        
+        /// <summary>
+        /// User Login
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /loginWithSocail
+        /// 
+        /// </remarks>
+        /// <returns>Ok</returns>
+        /// <response code="200">Return ok if successfully log in</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpPost("/loginWithSocial")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult LoginWithSocial(string mail)
+        {
+            if (mail == default) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(mail));
+            User user = _applicationService.GetUserByMail(mail).GetAwaiter().GetResult();
+            if (user == null) return NotFound(new ApiError(new ApiException.UserNotExist(mail))); 
+            return Ok(); 
+        }
     }
 }
