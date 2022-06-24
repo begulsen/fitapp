@@ -12,7 +12,6 @@ namespace FitApp.Api.Controllers.UserController.Model
         public string PhoneNumber { get; set; }
         public DateTime BirthDate { get; set; }
         public decimal Height { get; set; }
-        public bool CreateWithSocial { get; set; } = false;
         public decimal Weight { get; set; }
         [Required]
         [RegularExpression("none|twoTimesWeek|fourTimesWeek|moreThanFourTimesWeek", ErrorMessage = "Invalid WorkoutRate")]

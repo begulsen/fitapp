@@ -195,6 +195,8 @@ namespace FitApp.Api.Controllers.UserController
         public async Task<IActionResult> GetUser(Guid id)
         {
             User user = await _applicationService.GetUser(id);
+            if (user == null)
+                return NotFound();
             return Ok(user);
         }
 
