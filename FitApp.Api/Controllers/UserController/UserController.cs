@@ -224,7 +224,6 @@ namespace FitApp.Api.Controllers.UserController
             if (updateUserModel == null) 
                 return BadRequest(new ApiError(new ApiException.ValueCannotBeNullOrEmptyException(nameof(updateUserModel))));
 
-
             User user = await _applicationService.GetUser(id);
             if (user == null) throw new ApiException.UserIdIsNotExistException(nameof(id));
             await _applicationService.UpdateUser(updateUserModel.ToUpdateUser(user));
@@ -297,12 +296,21 @@ namespace FitApp.Api.Controllers.UserController
         /// <response code="500">Internal Server Error</response>
         [HttpGet("/{id:guid}/getProfileImage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public FileStreamResult GetUserPhoto([FromRoute] Guid id)
-        {
+        public ActionResult GetUserPhoto([FromRoute] Guid id)
+        {  
             var path = "images/" + id + "/"; 
             DirectoryInfo d = new DirectoryInfo(path);
-            FileInfo[] imageFiles = d.GetFiles();
+            FileInfo[] imageFiles;
+            try
+            {
+                imageFiles = d.GetFiles();
+            }
+            catch (Exception)
+            {
+                return BadRequest(new ApiError(new ApiException.UserNotExist(id.ToString())));
+            }
             FileInfo userImage = null;
             foreach (var image in imageFiles)
             {
@@ -314,7 +322,7 @@ namespace FitApp.Api.Controllers.UserController
                     }
                 }
             }
-            if (userImage == null) throw new ApiException.UserImageIsNotExistException();
+            if (userImage == null) return BadRequest(new ApiError(new ApiException.UserImageIsNotExistException()));
             FileStream imageStr = System.IO.File.OpenRead(path + "profile-image" + userImage.Extension);
             return File(imageStr, "image/jpeg");        
         }

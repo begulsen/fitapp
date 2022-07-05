@@ -9,6 +9,7 @@ namespace FitApp.UserPrivateDietRepository.Model
         public List<string> Goal { get; set; }
         public List<string> LikedFoods { get; set; }
         public List<string> DislikedFoods { get; set; }
+        public Dictionary<int, string> WeeksMenuNameDictionary { get; set; }
         public string AdditionalInformation { get; set; }
         public string Disease { get; set; }
         public DateTime StartDate { get; set; }

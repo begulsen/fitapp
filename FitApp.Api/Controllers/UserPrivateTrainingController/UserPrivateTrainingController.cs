@@ -5,12 +5,14 @@ using FitApp.Api.Controllers.UserPrivateTrainingController.Model;
 using FitApp.Api.Exceptions;
 using FitApp.Api.Helper;
 using FitApp.Api.Helper.ImageHelper;
+using FitApp.Api.Middleware;
 using FitApp.Api.Service;
 using FitApp.UserPrivateTrainingDetailRepository.Model;
 using FitApp.UserPrivateTrainingRepository.Model;
 using FitApp.UserRepository.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Nest;
 using Training = FitApp.UserPrivateTrainingDetailRepository.Model.Training;
 
 namespace FitApp.Api.Controllers.UserPrivateTrainingController
@@ -45,15 +47,15 @@ namespace FitApp.Api.Controllers.UserPrivateTrainingController
         /// <response code="200">Returns ok</response>
         /// <response code="400">Request model is empty</response>
         /// <response code="500">Internal Server Error</response>
-        [HttpPost("/createUserPrivateTraining")]
+        [HttpPost("/create")]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> CreateUserPrivateTraining([FromHeader(Name = "user-id")]Guid userId, [FromForm]CreateUserPrivateTrainingModel createModel)
         {
-            if (createModel == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(createModel));
+            if (createModel == null) return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(createModel)));
             User user = await _applicationService.GetUser(userId);
-            if (user == null) throw new ApiException.UserIdIsNotExistException(nameof(user.Id));
+            if (user == null) return BadRequest(new ApiException.UserIdIsNotExistException(nameof(userId)));
 
             UserPrivateTraining existingModel = await _applicationService.GetUserPrivateTraining(userId);
             await _applicationService.CreateUserPrivateTraining(createModel.ToUserPrivateTraining(userId));
@@ -121,6 +123,33 @@ namespace FitApp.Api.Controllers.UserPrivateTrainingController
             
             return StatusCode(StatusCodes.Status201Created);
         }
+        
+        /// <summary>
+        ///  0
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Get /getUserPrivateTraining
+        ///     
+        /// </remarks>
+        /// <param name="userId"></param>
+        /// <returns>Ok</returns>
+        /// <response code="200">Returns ok</response>
+        /// <response code="400">Request model is empty</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpGet("/getTraining")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetUserPrivateTraining(Guid userId)
+        {
+            User user = await _applicationService.GetUser(userId);
+            if (user == null) return BadRequest(new ApiException.UserIdIsNotExistException(nameof(userId)));
+            UserPrivateTraining model = await _applicationService.GetUserPrivateTraining(userId);
+            if (model == null) return BadRequest(new ApiException.UserPrivateTrainingIsNotExistException(userId));
+            return Ok(model);
+        }
 
         /// <summary>
         ///  0
@@ -145,13 +174,47 @@ namespace FitApp.Api.Controllers.UserPrivateTrainingController
         public async Task<IActionResult> UpdateTrainingDate([FromHeader(Name = "user-id")]Guid userId, DateTime startDate, DateTime endDate)
         {
             User user = await _applicationService.GetUser(userId);
-            if (user == null) throw new ApiException.UserIdIsNotExistException(nameof(userId));
+            if (user == null) return BadRequest(new ApiException.UserIdIsNotExistException(nameof(userId)));
             UserPrivateTraining model = await _applicationService.GetUserPrivateTraining(userId);
-            if (model == null) throw new ApiException.UserPrivateTrainingIsNotExistException(userId);
+            if (model == null) return BadRequest(new ApiException.UserPrivateTrainingIsNotExistException(userId));
 
             model.StartDate = startDate;
             model.EndDate = endDate;
             model.UpdatedAt = DateTime.Now;
+
+            await _applicationService.CreateUserPrivateTraining(model);
+            return Ok();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /updateDate
+        ///     
+        /// </remarks>
+        /// <param name="userId"></param>
+        /// <param name="weeksTrainingList"></param>
+        /// <returns>Ok</returns>
+        /// <response code="200">Returns ok</response>
+        /// <response code="400">Request model is empty</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpPost("/assignTrainings")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AssignTrainings([FromHeader(Name = "user-id")]Guid userId, Dictionary<int, List<string>> weeksTrainingList)
+        {
+            User user = await _applicationService.GetUser(userId);
+
+            if (user == null) return BadRequest(new ApiException.UserIdIsNotExistException(nameof(userId)));
+
+            UserPrivateTraining model = await _applicationService.GetUserPrivateTraining(userId);
+            if (model == null) return BadRequest(new ApiException.UserPrivateTrainingIsNotExistException(userId));
+
+            model.UpdatedAt = DateTime.Now;
+            model.WeeksTrainingList = weeksTrainingList;
 
             await _applicationService.CreateUserPrivateTraining(model);
             return Ok();

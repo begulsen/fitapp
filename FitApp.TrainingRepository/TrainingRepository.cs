@@ -78,19 +78,20 @@ namespace FitApp.TrainingRepository
             return Task.CompletedTask;
         }
 
-        public Task<Training> GetTrainingByNameAsync(string trainingName)
+        public Task<List<Training>> GetTrainingByNamesAsync(List<string> trainingNames)
         {
-            if (string.IsNullOrEmpty(trainingName)) throw new ArgumentNullException(nameof(trainingName));
+            if (trainingNames == null || trainingNames.Count == 0) throw new ArgumentNullException(nameof(trainingNames));
             var result = SessionClient.SearchAsync<Training>(s => s
-                .Take(1)
+                .Take(1000)
                 .Query(x => x
-                    .Term(m => m
+                    .Terms(m => m
                         .Field(f => f.Name.Suffix("keyword"))
-                        .Value(trainingName)))
+                        .Terms(trainingNames)))
                 .Index(IndexName)).GetAwaiter().GetResult();
 
             HandleResult(result);
-            return Task.FromResult(result.Documents.FirstOrDefault());
+            var trainings = result.Documents.ToList();
+            return Task.FromResult(trainings);
         }
     }
 }

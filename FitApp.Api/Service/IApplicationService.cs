@@ -27,7 +27,7 @@ namespace FitApp.Api.Service
         Task DeleteUserPrivateTrainingDetail(Guid id);
         Task UpdateUser(User updateUser);
         Task<Guid> CreateTraining(TrainingRepository.Model.Training training);
-        Task<TrainingRepository.Model.Training> GetTraining(string trainingName);
+        Task<List<TrainingRepository.Model.Training>> GetTrainings(List<string> trainingNames);
         Task UpdateTraining(Guid trainingId, List<Guid> setIds);
         Task CreateSet(Set toCreateSet);
         Task CreateActivity(Activity activity);

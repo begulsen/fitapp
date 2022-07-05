@@ -14,6 +14,7 @@ namespace FitApp.UserPrivateTrainingRepository.Model
         public string Level { get; set; }
         public string Disease { get; set; }
         public string AdditionalInformation { get; set; }
+        public Dictionary<int, List<string>> WeeksTrainingList {  get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }

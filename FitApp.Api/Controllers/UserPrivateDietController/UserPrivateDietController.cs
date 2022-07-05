@@ -36,7 +36,7 @@ namespace FitApp.Api.Controllers.UserPrivateDietController
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /createUserPrivateDiet
+        ///     POST /create
         ///     
         /// </remarks>
         /// <param name="userId"></param>
@@ -155,6 +155,67 @@ namespace FitApp.Api.Controllers.UserPrivateDietController
 
             await _applicationService.CreateUserPrivateDiet(model);
             return Ok();
+        }
+
+        /// <summary>
+        ///  0
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /assignPrivateDiet
+        ///     
+        /// </remarks>
+        /// <param name="userId"></param>
+        /// <param name="weeksMenuNameDictionary"></param>
+        /// <returns>Ok</returns>
+        /// <response code="200">Returns ok</response>
+        /// <response code="400">Request model is empty</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpPost("/assignPrivateDiet")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AssignPrivateDiet([FromHeader(Name = "user-id")] Guid userId, Dictionary<int, string> weeksMenuNameDictionary)
+        {
+            User user = await _applicationService.GetUser(userId);
+            if (user == null) throw new ApiException.UserIdIsNotExistException(nameof(userId));
+            if (weeksMenuNameDictionary == null || weeksMenuNameDictionary.Count == 0)
+                return BadRequest(new ApiException.UserIdIsNotExistException(nameof(userId)));
+            UserPrivateDiet model = await _applicationService.GetUserPrivateDiet(userId);
+            if (model == null) throw new ApiException.UserPrivateDietIsNotExistException(userId);
+    
+            model.UpdatedAt = DateTime.Now;
+            model.WeeksMenuNameDictionary = weeksMenuNameDictionary;
+            await _applicationService.CreateUserPrivateDiet(model);
+            return Ok();
+        }
+        
+        /// <summary>
+        ///  0
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Get /getUserPrivateTraining
+        ///     
+        /// </remarks>
+        /// <param name="userId"></param>
+        /// <returns>Ok</returns>
+        /// <response code="200">Returns ok</response>
+        /// <response code="400">Request model is empty</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpGet("/getDiet")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetUserPrivateDiet(Guid userId)
+        {
+            User user = await _applicationService.GetUser(userId);
+            if (user == null) return BadRequest(new ApiException.UserIdIsNotExistException(nameof(userId)));
+            var model = await _applicationService.GetUserPrivateDiet(userId);
+            if (model == null) return BadRequest(new ApiException.UserPrivateDietIsNotExistException(userId));
+            return Ok(model);
         }
     }
 }

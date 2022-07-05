@@ -115,9 +115,9 @@ namespace FitApp.Api.Service
             return training.Id;
         }
 
-        public async Task<TrainingRepository.Model.Training> GetTraining(string trainingName)
+        public async Task<List<TrainingRepository.Model.Training>> GetTrainings(List<string> trainingNames)
         {
-            return await _trainingRepository.GetTrainingByNameAsync(trainingName);
+            return await _trainingRepository.GetTrainingByNamesAsync(trainingNames);
         }
 
         public async Task UpdateTraining(Guid trainingId,  List<Guid> setIds)

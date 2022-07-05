@@ -73,11 +73,9 @@ namespace FitApp.Api.Controllers.TrainingController
         {
             if (trainingName == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(trainingName));
             if (setIds == null || !setIds.Any()) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(setIds));
-            
-            Training training = await _applicationService.GetTraining(trainingName);
-            if (training == null) throw new ApiException.TrainingNameIsNotExistException(nameof(trainingName));
-            
-            await _applicationService.UpdateTraining(training.Id, setIds);
+            var trainings = await _applicationService.GetTrainings(new List<string> { trainingName });
+            if (trainings == null || trainings.Count == 0) throw new ApiException.TrainingNameIsNotExistException(nameof(trainingName));
+            await _applicationService.UpdateTraining(trainings.FirstOrDefault().Id, setIds);
             return StatusCode(StatusCodes.Status200OK);
         }
         
@@ -87,55 +85,59 @@ namespace FitApp.Api.Controllers.TrainingController
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /getTrainingByName
+        ///     POST /getTrainingByNames
         ///     
         /// </remarks>
-        /// <param name="trainingName"></param>
+        /// <param name="trainingNames"></param>
         /// <returns>Ok</returns>
         /// <response code="200">Returns ok</response>
         /// <response code="400">If the trainingModel is null or empty</response>
-        [HttpGet("/getTrainingByName")]
+        [HttpGet("/getTrainingByNames")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTrainingByName([FromHeader] string trainingName)
+        public async Task<IActionResult> GetTrainingByName([FromHeader] List<string> trainingNames)
         {
-            if (trainingName == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(trainingName));
+            if (trainingNames == null || trainingNames.Count == 0) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(trainingNames));
             
-            Training training = await _applicationService.GetTraining(trainingName);
-            if (training == null) throw new ApiException.TrainingNameIsNotExistException(nameof(trainingName));
+            List<Training> trainings = await _applicationService.GetTrainings(trainingNames);
+            if (trainings == null) throw new ApiException.TrainingNameIsNotExistException(nameof(trainingNames));
 
-            var response = new ResponseTrainingModel()
+            var responseTrainingModels = new List<ResponseTrainingModel>();
+            foreach (var training in trainings)
             {
-                Name = training.Name,
-                IsPopular = training.IsPopular,
-                TrainingDifficulty = training.TrainingDifficulty,
-                TrainingDuration = training.TrainingDuration
-            };
-            response.Sets = new List<SetResponse>();
-            foreach (var setId in training.SetIds)
-            {
-                Set set = await _applicationService.GetSet(setId);
-                if (set != null)
+                var response = new ResponseTrainingModel()
                 {
-                    Activity activity = await _applicationService.GetActivity(set.ActivityId);
-                    response.Sets.Add(new SetResponse()
+                    Name = training.Name,
+                    IsPopular = training.IsPopular,
+                    TrainingDifficulty = training.TrainingDifficulty,
+                    TrainingDuration = training.TrainingDuration
+                };
+                response.Sets = new List<SetResponse>();
+                foreach (var setId in training.SetIds)
+                {
+                    Set set = await _applicationService.GetSet(setId);
+                    if (set != null)
                     {
-                        ActivityDifficulty = activity.Difficulty,
-                        ActivityEquipment = activity.Equipment,
-                        ActivityName = activity.Name,
-                        ActivityNumber = set.ActivityNumber,
-                        ActivityRepetition = set.ActivityRepetition,
-                        SetName = set.Name,
-                        ActivityStatus = activity.Status,
-                        ActivityEffectiveZone = activity.EffectiveZone,
-                        ActivityEffectiveZonePrimary = activity.EffectiveZonePrimary,
-                        ActivityEffectiveZoneSecondary = activity.EffectiveZoneSecondary,
-                    });
+                        Activity activity = await _applicationService.GetActivity(set.ActivityId);
+                        response.Sets.Add(new SetResponse()
+                        {
+                            ActivityDifficulty = activity.Difficulty,
+                            ActivityEquipment = activity.Equipment,
+                            ActivityName = activity.Name,
+                            ActivityNumber = set.ActivityNumber,
+                            ActivityRepetition = set.ActivityRepetition,
+                            SetName = set.Name,
+                            ActivityStatus = activity.Status,
+                            ActivityEffectiveZone = activity.EffectiveZone,
+                            ActivityEffectiveZonePrimary = activity.EffectiveZonePrimary,
+                            ActivityEffectiveZoneSecondary = activity.EffectiveZoneSecondary,
+                        });
+                    }
                 }
+                responseTrainingModels.Add(response);
             }
-
-            return Ok(response);
+            return Ok(responseTrainingModels);
         }
     }
 }

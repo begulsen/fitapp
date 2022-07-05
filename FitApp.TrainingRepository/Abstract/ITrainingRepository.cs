@@ -10,6 +10,6 @@ namespace FitApp.TrainingRepository.Abstract
         Task<Training> GetTraining(string trainingId);
         Task<List<Training>> GetAll();
         Task Update(Guid id, List<Guid> activityIds);
-        Task<Training> GetTrainingByNameAsync(string trainingName);
+        Task<List<Training>> GetTrainingByNamesAsync(List<string> trainingNames);
     }
 }

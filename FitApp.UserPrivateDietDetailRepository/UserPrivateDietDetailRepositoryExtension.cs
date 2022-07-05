@@ -43,8 +43,8 @@ namespace FitApp.UserPrivateDietDetailRepository
             //var uriList = elasticUrl.Split(';').Select(x => new Uri(x));
             //var pool = new StaticConnectionPool(uriList);
             var cloudId =
-                "My_deployment:ZXUtd2VzdC0yLmF3cy5jbG91ZC5lcy5pbzo0NDMkMTI4MDJlMDhhY2QzNGQ4Yzg4NzZiZmVkNzgyZDUzM2EkNmRjMTRjOTQ4Y2JlNDMzNmE3NDllZDMxNDM0ODFlMTY=";
-            var credentials = new BasicAuthenticationCredentials("elastic", "ZRMZaPLIrI4pVt7k7DAmPi42");
+                "FitApp:ZXUtd2VzdC0yLmF3cy5jbG91ZC5lcy5pbzo0NDMkYmFmOGMyYzlhNTI4NGYzMDljNjdlZWQ2MjZiZjg3NzYkZDU4NWRhNjg2OWE1NGJhMmIxNTNkZDZjMGZhZjRiZTQ=";
+            var credentials = new BasicAuthenticationCredentials("elastic", "3tRsUzISrwECMYCjZVM1QnzV");
             var pool = new CloudConnectionPool(cloudId, credentials);
             var elasticConnectionSettings = new ConnectionSettings(pool).ThrowExceptions().EnableDebugMode();
             var elasticClient = new ElasticClient(elasticConnectionSettings);

@@ -72,7 +72,6 @@ namespace FitApp.Api.Helper
                 CustomerName = model.CustomerName ?? user.CustomerName,
                 CustomerSurname = model.CustomerSurname ?? user.CustomerSurname,
                 CustomerMail = model.CustomerMail ?? user.CustomerMail,
-                PhoneNumber = model.PhoneNumber ?? user.PhoneNumber,
                 Password = model.Password ?? user.Password,
                 Height = model.Height ?? user.Height,
                 Weight = model.Weight ?? user.Weight,
