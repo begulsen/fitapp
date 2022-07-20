@@ -45,7 +45,7 @@ namespace FitApp.Api.Controllers.SetController
             var activity = await _applicationService.GetActivity(createSetModel.ActivityId);
             if (activity == null)
             {
-                throw new ApiException.ActivityCannotExistException(createSetModel.ActivityId);
+                return BadRequest(new ApiException.ActivityCannotExistException(createSetModel.ActivityId));
             }
             await _applicationService.CreateSet(createSetModel.ToCreateSet());
             return StatusCode(StatusCodes.Status201Created);
@@ -90,7 +90,8 @@ namespace FitApp.Api.Controllers.SetController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetSetByName(string setName)
         {
-            if (string.IsNullOrEmpty(setName)) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(setName));
+            if (string.IsNullOrEmpty(setName)) 
+                return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(setName)));
             Set set = await _applicationService.GetSetByName(setName);
             return Ok(set);
         }
@@ -115,12 +116,14 @@ namespace FitApp.Api.Controllers.SetController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateSet(Guid id, [FromBody]UpdateSetModel updateSetModel)
         {
-            if (id == default) throw new ApiException.UserIdIsNotValidException(nameof(id));
-            if (updateSetModel == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(updateSetModel));
-            
+            if (id == default) 
+                return BadRequest(new ApiException.UserIdIsNotValidException(nameof(id)));
+            if (updateSetModel == null) 
+                return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(updateSetModel)));
 
             Set set = await _applicationService.GetSet(id);
-            if (set == null) throw new ApiException.SetIdIsNotExistException(nameof(id));
+            if (set == null) 
+                return BadRequest(new ApiException.SetIdIsNotExistException(nameof(id)));
             await _applicationService.UpdateSet(updateSetModel.ToUpdateSet(set));
             return Accepted(StatusCodes.Status202Accepted);
         }

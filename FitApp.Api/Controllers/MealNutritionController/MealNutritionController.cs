@@ -43,12 +43,10 @@ namespace FitApp.Api.Controllers.MealNutritionController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateMealNutrition([FromBody]CreateMealNutritionModel createMealNutritionModel)
         {
-            if (createMealNutritionModel == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(createMealNutritionModel));
+            if (createMealNutritionModel == null) return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(createMealNutritionModel)));
             Nutrition nutrition = await _applicationService.GetNutrition(createMealNutritionModel.NutritionId);
             if (nutrition == null)
-            {
-                throw new ApiException.NutritionIdIsNotExistException(createMealNutritionModel.NutritionId.ToString());
-            }
+                return BadRequest(new ApiException.NutritionIdIsNotExistException(createMealNutritionModel.NutritionId.ToString()));
             await _applicationService.CreateMealNutritionModel(createMealNutritionModel.ToCreateMealNutrition(nutrition));
             return StatusCode(StatusCodes.Status201Created);
         }
@@ -74,7 +72,7 @@ namespace FitApp.Api.Controllers.MealNutritionController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetMealNutrition(Guid mealNutritionId)
         {
-            if (mealNutritionId == default) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(mealNutritionId));
+            if (mealNutritionId == default) return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(mealNutritionId)));
             MealNutrition mealNutrition = await _applicationService.GetMealNutritionByNutritionId(mealNutritionId);
             if (mealNutrition == null) return NotFound();
             return Ok(mealNutrition);
@@ -96,7 +94,7 @@ namespace FitApp.Api.Controllers.MealNutritionController
         [HttpGet("/getAllMealNutritions")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> getAllMealNutritions()
+        public async Task<IActionResult> GetAllMealNutritions()
         {
             List<MealNutrition> mealNutritions = await _applicationService.GetAllMealNutritions();
             return Ok(mealNutritions);

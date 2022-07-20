@@ -5,6 +5,7 @@ using FitApp.Api.Controllers.UserPrivateDietController.Model;
 using FitApp.Api.Exceptions;
 using FitApp.Api.Helper;
 using FitApp.Api.Helper.ImageHelper;
+using FitApp.Api.Middleware;
 using FitApp.Api.Service;
 using FitApp.UserPrivateDietDetailRepository.Model;
 using FitApp.UserPrivateDietRepository.Model;
@@ -145,9 +146,10 @@ namespace FitApp.Api.Controllers.UserPrivateDietController
             DateTime endDate)
         {
             User user = await _applicationService.GetUser(userId);
-            if (user == null) throw new ApiException.UserIdIsNotExistException(nameof(userId));
+            if (user == null) 
+                return BadRequest(new ApiException.UserIdIsNotExistException(nameof(userId)));
             UserPrivateDiet model = await _applicationService.GetUserPrivateDiet(userId);
-            if (model == null) throw new ApiException.UserPrivateDietIsNotExistException(userId);
+            if (model == null) return BadRequest( new ApiException.UserPrivateDietIsNotExistException(userId));
 
             model.StartDate = startDate;
             model.EndDate = endDate;
@@ -179,12 +181,14 @@ namespace FitApp.Api.Controllers.UserPrivateDietController
         public async Task<IActionResult> AssignPrivateDiet([FromHeader(Name = "user-id")] Guid userId, Dictionary<int, string> weeksMenuNameDictionary)
         {
             User user = await _applicationService.GetUser(userId);
-            if (user == null) throw new ApiException.UserIdIsNotExistException(nameof(userId));
+            if (user == null) 
+                return BadRequest(new ApiException.UserIdIsNotExistException(nameof(userId)));
             if (weeksMenuNameDictionary == null || weeksMenuNameDictionary.Count == 0)
                 return BadRequest(new ApiException.UserIdIsNotExistException(nameof(userId)));
             UserPrivateDiet model = await _applicationService.GetUserPrivateDiet(userId);
-            if (model == null) throw new ApiException.UserPrivateDietIsNotExistException(userId);
-    
+            if (model == null) 
+                return BadRequest(new ApiError(new ApiException.UserPrivateDietIsNotExistException(userId)));
+
             model.UpdatedAt = DateTime.Now;
             model.WeeksMenuNameDictionary = weeksMenuNameDictionary;
             await _applicationService.CreateUserPrivateDiet(model);

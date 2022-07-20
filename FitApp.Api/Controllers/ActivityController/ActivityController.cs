@@ -39,7 +39,8 @@ namespace FitApp.Api.Controllers.ActivityController
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateActivity([FromBody]CreateActivityModel createActivityModel)
         {
-            if (createActivityModel == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(createActivityModel));
+            if (createActivityModel == null) 
+                return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(createActivityModel)));
             await _applicationService.CreateActivity(createActivityModel.ToCreateActivity());
             return StatusCode(StatusCodes.Status201Created);
         }
@@ -63,7 +64,8 @@ namespace FitApp.Api.Controllers.ActivityController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetActivity(string activityName)
         {
-            if (string.IsNullOrEmpty(activityName)) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(activityName));
+            if (string.IsNullOrEmpty(activityName)) 
+                return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(activityName)));
             Activity activity = await _applicationService.GetActivityByName(activityName);
             if (activity == null) return NotFound();
             return Ok(activity);

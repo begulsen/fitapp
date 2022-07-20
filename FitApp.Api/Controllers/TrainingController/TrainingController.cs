@@ -101,7 +101,8 @@ namespace FitApp.Api.Controllers.TrainingController
             if (trainingNames == null || trainingNames.Count == 0) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(trainingNames));
             
             List<Training> trainings = await _applicationService.GetTrainings(trainingNames);
-            if (trainings == null) throw new ApiException.TrainingNameIsNotExistException(nameof(trainingNames));
+            if (trainings == null) 
+                return BadRequest(new ApiException.TrainingNameIsNotExistException(nameof(trainingNames)));
 
             var responseTrainingModels = new List<ResponseTrainingModel>();
             foreach (var training in trainings)

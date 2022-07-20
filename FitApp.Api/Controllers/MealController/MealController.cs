@@ -43,18 +43,15 @@ namespace FitApp.Api.Controllers.MealController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateMeal([FromBody] CreateMealModel createMealModel)
         {
-            if (createMealModel == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(createMealModel));
+            if (createMealModel == null)
+                return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(createMealModel)));
             List<MealNutrition> mealNutritions = await _applicationService.GetMealNutritions(createMealModel.MealNutritionIds);
             if (mealNutritions == null || !mealNutritions.Any())
-            {
-                throw new ApiException.MealNutritionIdIsNotExistException(nameof(mealNutritions));
-            }
+                return BadRequest(new ApiException.MealNutritionIdIsNotExistException(nameof(mealNutritions)));
 
             Meal meal = await _applicationService.GetMealByName(createMealModel.Name);
             if (meal != null)
-            {
-                throw new ApiException.MealNameAlreadyExist(nameof(meal.Name));
-            }
+                return BadRequest(new ApiException.MealNameAlreadyExist(nameof(meal.Name)));
             await _applicationService.CreateMeal(createMealModel.ToCreateMeal());
             return StatusCode(StatusCodes.Status201Created);
         }
@@ -79,7 +76,8 @@ namespace FitApp.Api.Controllers.MealController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetMeal(string mealName)
         {
-            if (string.IsNullOrEmpty(mealName)) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(mealName));
+            if (string.IsNullOrEmpty(mealName)) 
+                return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(mealName)));
             Meal meal = await _applicationService.GetMealByName(mealName);
             if (meal == null) return NotFound();
             return Ok(meal);

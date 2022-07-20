@@ -225,7 +225,8 @@ namespace FitApp.Api.Controllers.UserController
                 return BadRequest(new ApiError(new ApiException.ValueCannotBeNullOrEmptyException(nameof(updateUserModel))));
 
             User user = await _applicationService.GetUser(id);
-            if (user == null) throw new ApiException.UserIdIsNotExistException(nameof(id));
+            if (user == null) 
+                return BadRequest(new ApiException.UserIdIsNotExistException(nameof(id)));
             await _applicationService.UpdateUser(updateUserModel.ToUpdateUser(user));
             return Accepted(StatusCodes.Status202Accepted);
         }
@@ -358,7 +359,7 @@ namespace FitApp.Api.Controllers.UserController
 
             if (userImage == null)
             {
-                throw new ApiException.UserImageIsNotExistException();
+                return BadRequest(new ApiException.UserImageIsNotExistException());
             }
             userImage.Delete();
             return Ok();
@@ -417,8 +418,10 @@ namespace FitApp.Api.Controllers.UserController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Login(string mail, string password)
         {
-            if (mail == default) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(mail));
-            if (password == default) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(password));
+            if (mail == default) 
+                return BadRequest(new ApiError(new ApiException.ValueCannotBeNullOrEmptyException(nameof(mail))));
+            if (password == default) 
+                return BadRequest(new ApiError(new ApiException.ValueCannotBeNullOrEmptyException(nameof(password))));
             User user = _applicationService.GetUserByMail(mail).GetAwaiter().GetResult();
             if (user == null) return NotFound(new ApiError(new ApiException.UserNotExist(mail)));
             if (user.Password == null) return BadRequest(new ApiError(new ApiException.UserRegisterWithSocialException(mail)));
@@ -445,7 +448,8 @@ namespace FitApp.Api.Controllers.UserController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult LoginWithSocial(string mail)
         {
-            if (mail == default) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(mail));
+            if (mail == default)
+                return BadRequest(new ApiError(new ApiException.ValueCannotBeNullOrEmptyException(nameof(mail))));
             User user = _applicationService.GetUserByMail(mail).GetAwaiter().GetResult();
             if (user == null) return NotFound(new ApiError(new ApiException.UserNotExist(mail))); 
             return Ok(); 

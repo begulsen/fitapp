@@ -40,7 +40,8 @@ namespace FitApp.Api.Controllers.NutritionController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateNutrition([FromBody]CreateNutritionModel createNutritionModel)
         {
-            if (createNutritionModel == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(createNutritionModel));
+            if (createNutritionModel == null) 
+                return BadRequest(new ApiException.NutritionIdIsNotExistException(nameof(createNutritionModel)));
             await _applicationService.CreateNutrition(createNutritionModel.ToCreateNutrition());
             return StatusCode(StatusCodes.Status201Created);
         }
@@ -65,7 +66,7 @@ namespace FitApp.Api.Controllers.NutritionController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetNutrition(string nutritionName)
         {
-            if (string.IsNullOrEmpty(nutritionName)) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(nutritionName));
+            if (string.IsNullOrEmpty(nutritionName)) return BadRequest(new ApiException.NutritionIdIsNotExistException(nameof(nutritionName)));
             Nutrition nutrition = await _applicationService.GetNutritionByName(nutritionName);
             if (nutrition == null) return NotFound();
             return Ok(nutrition);
@@ -94,9 +95,11 @@ namespace FitApp.Api.Controllers.NutritionController
         public async Task<IActionResult> UpdateNutrition(Guid id, [FromBody] UpdateNutritionModel updateNutritionModel)
         {
             if (id == default) throw new ApiException.UserIdIsNotValidException(nameof(id));
-            if (updateNutritionModel == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(updateNutritionModel));
+            if (updateNutritionModel == null) 
+                return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(updateNutritionModel)));
             Nutrition nutrition = await _applicationService.GetNutrition(id);
-            if (nutrition == null) throw new ApiException.NutritionIdIsNotExistException(nameof(nutrition));
+            if (nutrition == null) 
+                return BadRequest(new ApiException.NutritionIdIsNotExistException(nameof(nutrition)));
             await _applicationService.UpdateNutrition(updateNutritionModel.ToUpdateNutrition(nutrition));
             return Ok(StatusCodes.Status200OK);
         }

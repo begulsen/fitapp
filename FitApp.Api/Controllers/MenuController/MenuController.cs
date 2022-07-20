@@ -44,11 +44,11 @@ namespace FitApp.Api.Controllers.MenuController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateMenu(string name, List<FitApp.MenuRepository.Model.Day> days)
         {
-            if (name == null) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(name));
-            if (days == null || !days.Any()) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(days));
-            if (days.Count != 7) throw new ApiException.MenuMustHave7Days(days.Count);
+            if (name == null) return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(name)));
+            if (days == null || !days.Any()) return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(days)));
+            if (days.Count != 7) return BadRequest(new ApiException.MenuMustHave7Days(days.Count));
             Menu menu = await _applicationService.GetMenuByName(name);
-            if (menu != null) throw new ApiException.MenuAlreadyExist(name);
+            if (menu != null) return BadRequest(new ApiException.MenuAlreadyExist(nameof(menu)));
             await _applicationService.CreateMenu(name, days);
             return StatusCode(StatusCodes.Status201Created);
         }
@@ -73,7 +73,7 @@ namespace FitApp.Api.Controllers.MenuController
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetMenuByName(string menuName)
         {
-            if (string.IsNullOrEmpty(menuName)) throw new ApiException.ValueCannotBeNullOrEmptyException(nameof(menuName));
+            if (string.IsNullOrEmpty(menuName)) return BadRequest(new ApiException.ValueCannotBeNullOrEmptyException(nameof(menuName)));
             Menu menu = await _applicationService.GetMenuByName(menuName);
             if (menu == null) return NotFound();
             var mealGuidList = new List<Guid>();
