@@ -45,8 +45,8 @@ namespace FitApp.MealNutritionRepository
             //var pool = new StaticConnectionPool(uriList);
             
             var cloudId =
-                "FitApp:ZXUtd2VzdC0yLmF3cy5jbG91ZC5lcy5pbzo0NDMkYmFmOGMyYzlhNTI4NGYzMDljNjdlZWQ2MjZiZjg3NzYkZDU4NWRhNjg2OWE1NGJhMmIxNTNkZDZjMGZhZjRiZTQ=";
-            var credentials = new BasicAuthenticationCredentials("elastic", "3tRsUzISrwECMYCjZVM1QnzV");
+                "My_deployment:ZXUtY2VudHJhbC0xLmF3cy5jbG91ZC5lcy5pbzo0NDMkYzg0NTRhMjUwYjc5NDllZmFhYjMxNzU3MzA5ZWMyODckZmJlYWRiY2NkMzNmNDVjMTlhMTg1Yjg3YzI4MDhlMDg=";
+            var credentials = new BasicAuthenticationCredentials("elastic", "eU369xKmWPI6RMdDZPXESler");
             var pool = new CloudConnectionPool(cloudId, credentials);
             var elasticConnectionSettings = new ConnectionSettings(pool).ThrowExceptions().EnableDebugMode();
             var elasticClient = new ElasticClient(elasticConnectionSettings);
