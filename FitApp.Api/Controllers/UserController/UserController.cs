@@ -375,7 +375,7 @@ namespace FitApp.Api.Controllers.UserController
         /// 
         /// </remarks>
         /// <returns>Ok</returns>
-        /// <response co"de="200">Returns the newly created deeplink</response>
+        /// <response code="200">Returns the newly created deeplink</response>
         /// <response code="500">Internal Server Error</response>
         [HttpDelete("/{id:guid}/deleteUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]

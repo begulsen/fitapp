@@ -54,7 +54,7 @@ namespace FitApp.SetRepository
                 .Take(1)
                 .Query(x => x
                     .Term(m => m
-                        .Field(f => f.Name)
+                        .Field(f => f.Name.Suffix("keyword"))
                         .Value(setName)))
                 .Index(IndexName)).GetAwaiter().GetResult();
 

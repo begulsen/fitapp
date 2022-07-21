@@ -56,7 +56,7 @@ namespace FitApp.NutritionRepository
                 .Take(1)
                 .Query(x => x
                     .Term(m => m
-                        .Field(f => f.Name)
+                        .Field(f => f.Name.Suffix("keyword"))
                         .Value(nutritionName)))
                 .Index(IndexName)).GetAwaiter().GetResult();
 
