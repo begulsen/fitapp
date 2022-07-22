@@ -99,5 +99,43 @@ namespace FitApp.Api.Controllers.MealNutritionController
             List<MealNutrition> mealNutritions = await _applicationService.GetAllMealNutritions();
             return Ok(mealNutritions);
         }
+        
+        /// <summary>
+        /// Get MealNutrition By NutritionId
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /GetAllMealNutritionsBackoffice
+        /// 
+        ///     
+        /// </remarks>
+        /// <returns>Ok</returns>
+        /// <response code="200">Returns ok</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpGet("/getAllMealNutritionsBackoffice")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllMealNutritionsBackoffice()
+        {
+            List<MealNutrition> mealNutritions = await _applicationService.GetAllMealNutritions();
+            var responseList = new List<ResponseMealNutritionBackoffice>();
+            foreach (var meal in mealNutritions)
+            {
+                Nutrition nutrition = await _applicationService.GetNutrition(meal.NutritionId);
+                responseList.Add(new ResponseMealNutritionBackoffice
+                {
+                    NutritionId = nutrition.Id,
+                    NutritionName = nutrition.Name,
+                    Factor = meal.Factor,
+                    TotalCalories = meal.TotalCalories,
+                    TotalProtein = meal.TotalProtein,
+                    Unit = nutrition.Unit,
+                    CreatedAt = nutrition.CreatedAt
+                });
+            }
+            return Ok(responseList);
+        }
+        
     }
 }
